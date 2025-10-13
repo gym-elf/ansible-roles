@@ -1,0 +1,19 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for swaptrasher
+ 
+ - name: checking a swapfile
+   ansible.builtin.shell: test -f /swapfile 
+   register: swap_ckeck
+   ignore_errors: true
+
+ - name: delete swapfile 
+   ansible.builtin.file:
+     path: /swapfile
+     state: absent
+
+ - name: delete line from fstab 
+   ansible.builtin.lineinfile:
+      path: /etc/fstab
+      regexp: '^/swapfile none swap 0 0'
+      state: absent 
