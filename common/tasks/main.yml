@@ -3,7 +3,7 @@
 # tasks file for common
 - name: set timezone to Europe/Moscow
   community.general.timezone:
-     name: {{ region }}/{{ city }}
+     name: "{{ region }}/{{ city }}"
 
 - block:
    - name: create a swap file
