@@ -44,3 +44,11 @@
   apt:
     update_cache: yes
   become: yes
+
+- name: installation packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ packages }}"
+  become: yes 

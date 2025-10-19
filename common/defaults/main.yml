@@ -7,3 +7,9 @@ region: Europe
 city: Moscow
 
 swapfile: /swapfile
+
+packages:
+   - git
+   - htop
+   - net-tools
+   - wget
