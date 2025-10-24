@@ -38,7 +38,9 @@
 
 - name: set hostname
   ansible.builtin.hostname:
-     name: "{{ inventory_hostname }}"  
+      name: "{{ hostname }}"
+  become: yes    
+#     name: "{{ inventory_hostname }}"  
 
 - name: update apt cache
   apt:
