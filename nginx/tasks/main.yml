@@ -1,0 +1,43 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for nginx
+
+- name: install nginx package RedHat
+  yum:
+    name: nginx
+    state: present
+  when: ansible_os_family == "RedHat"
+  become: yes
+
+- name: install nginx package on debian systems 
+  apt:
+    name: nginx
+    state: present
+  when: ansible_os_family == "Debian"
+  become: yes
+
+- name: ensure nginx is enabled and running 
+  service:
+    name: nginx
+    state: started
+    enabled: true
+  become: yes
+
+- name: disable default site if required
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent 
+  when: not nginx_default_sites_enabled
+  become: yes
+
+- name: deploy nginx configuration file 
+  template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_conf_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - reload nginx
+  become: yes

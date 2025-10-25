@@ -17,3 +17,10 @@
       path: /etc/fstab
       regexp: '^/swapfile none swap 0 0'
       state: absent 
+
+ - name: get swap path
+   shell: swapon --show
+   register: swap_path
+
+ - debug:
+     msg: "Swap path: {{ hostname }} / {{ swap_path }}"
