@@ -40,7 +40,7 @@
   ansible.builtin.hostname:   
      name: "{{ inventory_hostname }}"  
   become: yes
-  
+
 - name: update apt cache
   apt:
     update_cache: yes
@@ -53,3 +53,10 @@
   loop:
     - "{{ packages }}"
   become: yes 
+
+- name: get load average
+  shell: uptime | awk -F'load average:' '{print $2}' | sed 's/^ *//'
+  register: output
+
+- debug:
+    msg: " load average: {{ output.stdout }}"
