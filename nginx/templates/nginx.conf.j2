@@ -10,20 +10,20 @@ http {
     default_type application/octet-stream;
 
     sendfile        on;
-    keepalive_timeout {{keepalive_timeout}};
+    keepalive_timeout {{ keepalive_timeout }};
 
     server {
         listen      80;
-        server_name {{server_name}};
+        server_name {{ server_name }};
 
         location / {
-            root    {{nginx_root}};
+            root    {{ nginx_root }};
             index   index.html index.htm;
         }
 
         error_page  500 502 503 504     /50x.html;
         location = /50x.html {
-            root    {{nginx_root}};
+            root    {{ nginx_root }};
         }
     }
 }
