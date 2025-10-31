@@ -19,6 +19,7 @@ http {
         location / {
             root    {{ nginx_root }};
             index   index.html index.htm;
+            proxy_pass http://server/pythoner; 
         }
 
         error_page  500 502 503 504     /50x.html;
