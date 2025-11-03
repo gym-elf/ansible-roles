@@ -10,3 +10,10 @@ nginx_worker_connections: 1024
 keepalive_timeout: 60
 server_name: localhost
 nginx_root: /usr/share/nginx/html
+
+
+
+nginx_users_file: "/etc/nginx/.htpasswd"
+nginx_auth_users:
+  - name: "linuxfactory"
+    password: "linuxfactory"

@@ -37,4 +37,13 @@
       notify:
         - reload nginx
         
+    - name: create htpasswd
+      community.general.htpasswd:
+        path: "{{ nginx_users_file }}"
+        name: "{{ item.name }}"
+        password: "{{ item.password }}"
+        crypt_scheme: md5
+      loop: "{{ nginx_auth_users }}" 
+      notify: reload nginx
+
   become: yes
