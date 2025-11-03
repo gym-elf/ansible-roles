@@ -22,6 +22,10 @@ http {
         }
 
         location /pythoner/  {
+
+            auth_basic "Restricted Content";
+            auth_basic_user_file {{ nginx_users_file }};
+            
             proxy_pass http://localhost:5000/;
               
         }

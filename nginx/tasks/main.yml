@@ -36,13 +36,35 @@
         backup: yes
       notify:
         - reload nginx
-        
+
+
+
+
+
+
+    - name: Install passlib for htpasswd
+      package:
+         name: "{{ 'python3-passlib' if ansible_os_family == 'Debian' else 'python3-passlib' }}"
+         state: present
+      when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
+
+    - name: Install pip3 
+      package:
+        name: "{{ 'python3-pip' if ansible_os_family == 'Debian' else 'python3-pip' if ansible_os_family == 'RedHat' else 'python3' }}"
+        state: present
+      when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
+
+    - name: Ensure passlib is installed via pip
+      pip:
+        name: passlib
+        executable: pip3
+      when: ansible_os_family != "Debian" and ansible_os_family != "RedHat"
+
     - name: create htpasswd
       community.general.htpasswd:
         path: "{{ nginx_users_file }}"
         name: "{{ item.name }}"
         password: "{{ item.password }}"
-        crypt_scheme: md5
       loop: "{{ nginx_auth_users }}" 
       notify: reload nginx
 
