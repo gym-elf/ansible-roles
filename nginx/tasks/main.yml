@@ -37,24 +37,19 @@
       notify:
         - reload nginx
 
-
-
-
-
-
     - name: Install passlib for htpasswd
       package:
          name: "{{ 'python3-passlib' if ansible_os_family == 'Debian' else 'python3-passlib' }}"
          state: present
       when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
 
-    - name: Install pip3 
+    - name: install pip3 
       package:
         name: "{{ 'python3-pip' if ansible_os_family == 'Debian' else 'python3-pip' if ansible_os_family == 'RedHat' else 'python3' }}"
         state: present
       when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
 
-    - name: Ensure passlib is installed via pip
+    - name: ensure passlib is installed via pip
       pip:
         name: passlib
         executable: pip3

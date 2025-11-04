@@ -1,19 +1,19 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # defaults file for nginx
-nginx_conf_path: /etc/nginx/nginx.conf
+nginx_conf_path: "/etc/nginx/nginx.conf"
 nginx_default_sites_enabled: false
-nginx_user: "{{ 'nginx' if ansible_os_family == 'RedHat' else 'www-data' }}"
+nginx_user: "www-data"
 nginx_worker_processes: auto
 nginx_worker_connections: 1024
 
 keepalive_timeout: 60
 server_name: localhost
-nginx_root: /usr/share/nginx/html
-
-
+nginx_root: "/usr/share/nginx/html"
+proxy_host: "localhost"
+proxy_port: 5000
 
 nginx_users_file: "/etc/nginx/.htpasswd"
 nginx_auth_users:
-  - name: "linuxfactory"
-    password: "linuxfactory"
+  - name: linuxfactory
+    password: linuxfactory
