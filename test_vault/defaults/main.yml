@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for test_vault
+
+mysql_user: root
+mysql_password: secret
+mysql_host: localhost
