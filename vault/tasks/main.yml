@@ -37,3 +37,11 @@
         - "{{ vault_dir }}/docker-compose.yml"
         state: present
   become: yes
+
+- name: get keys from vault
+  vars:
+    keys: "{{ lookup('hashi_vault', 'secret={{ vault_keys_path }} token={{ vault_token }} url={{ vault_server }}')}}"
+  debug:
+    msg: "user: {{ item.key }}, passwd: {{ item.value }}"
+  with_items:
+      - "{{ keys | dict2items }}"
