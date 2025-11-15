@@ -45,3 +45,4 @@
     msg: "user: {{ item.key }}, passwd: {{ item.value }}"
   with_items:
       - "{{ keys | dict2items }}"
+      
