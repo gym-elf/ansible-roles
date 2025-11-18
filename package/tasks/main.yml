@@ -2,33 +2,28 @@
 ---
 # tasks file for package
 
-- name: install packages 
-  hosts: all
-  become: yes
-  
-  tasks:
-    - name: install git packages
-      ansible.builtin.package:
-        name: git
-        state: present
-      tags: git
+- name: install git packages
+  ansible.builtin.package:
+    name: git
+    state: present
+  tags: git
 
-    - name: install htop package
-      ansible.builtin.package:
-        name: htop
-        state: present
-      tags: htop
+- name: install htop package
+  ansible.builtin.package:
+    name: htop
+    state: present
+  tags: htop
 
-    - name: install mc package
-      ansible.builtin.package:
-        name: mc
-        state: present
-      tags: mc
-    
-    - name: check disk usage
-      command: df -h
-      register: disk_usage
-      tags: always 
-    - debug:
-         msg: "{{ disk_usage.stdout }}"
-      tags: always 
+- name: install mc package
+  ansible.builtin.package:
+    name: mc
+    state: present
+  tags: mc
+
+- name: check disk usage
+  command: df -h
+  register: disk_usage
+  tags: always 
+- debug:
+      msg: "{{ disk_usage.stdout }}"
+  tags: always 
