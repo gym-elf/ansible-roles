@@ -1,0 +1,52 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for agent
+
+
+ - block:
+    - name: get consul.zip
+      get_url:  
+        url: "http://{{ agent_ip }}:8000/consul.zip"
+        dest: "/tmp/consul.zip"
+        mode: '0644'
+
+    - name: extract downloaded binary
+      unarchive:
+        src: "/tmp/consul.zip"
+        dest: "/tmp/"
+        remote_src: yes
+        creates: "/tmp/consul"
+
+    - name: move consul to bin directory
+      command:  mv consul /usr/local/bin/
+      args:
+          chdir: /tmp
+          
+    - name: create /etc/consul.d directory
+      file:
+        path: /etc/consul.d
+        state: directory
+        mode: "0755"
+      
+    - name: deploy consul.hcl configuration
+      template:
+        src: consul.hcl.j2
+        dest: /etc/consul.d/consul.hcl
+        mode: "0644"
+      
+    - name: deploy systemd service file
+      template:
+        src: consul.service.j2
+        dest: /etc/systemd/system/consul.service
+        mode: "0644"
+      
+    - name: reload systemd
+      command: systemctl daemon-reload
+    
+    - name: enable and start Consul service
+      systemd:
+        name: consul
+        enabled: yes
+        state: started
+        
+   become: yes 

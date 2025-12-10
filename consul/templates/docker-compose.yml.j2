@@ -1,0 +1,42 @@
+services:
+  consul:
+    image: hashicorp/consul:latest
+    container_name: {{ consul_container_name }}
+    network_mode: bridge
+
+    ports:
+      - "18500:8500"
+      - "18300:8300/tcp"
+      - "18300:8300/udp"
+      - "18301:8301/tcp"
+      - "18301:8301/udp"
+      - "18302:8302/tcp"
+      - "18302:8302/udp"
+      - "18600:8600/udp"
+
+    volumes:
+      - consul-data:/consul/data
+      - consul-config:/consul/config
+
+    environment:
+      CONSUL_BIND_INTERFACE: eth0
+
+    entrypoint: ["consul", "agent"]
+
+    command:
+      - "-server"
+      - "-advertise={{ consul_advertise_ip }}"
+      - "-ui"
+      - "-bootstrap-expect=1"
+      - "-client=0.0.0.0"
+      - "-datacenter={{ consul_datacenter }}"
+      - "-node={{ consul_node_name }}"
+      - "-data-dir=/consul/config"
+      - "-config-dir=/consul/config"
+      - "-encrypt={{ consul_encrypt_key }}"
+
+volumes:
+  consul-data:
+    driver: local
+  consul-config:
+    driver: local

@@ -1,0 +1,12 @@
+{
+  "service": {
+    "name": "node_exporter",
+    "tags": ["metrics"],
+    "port": 9100,
+    "check": {
+      "http": "http://127.0.0.1:9100/metrics",
+      "interval": "10s",
+      "timeout": "1s"
+   }
+  }
+}

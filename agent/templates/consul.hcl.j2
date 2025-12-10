@@ -1,0 +1,8 @@
+datacenter = "{{ consul_datacenter }}"
+node_name = "{{ consul_node_name }}"
+data_dir = "/opt/consul"
+client_addr = "0.0.0.0"
+retry_join = ["192.168.31.6"]
+bind_addr = "0.0.0.0"
+advertise_addr = "{{ consul_advertise_ip }}"
+encrypt = "{{ consul_encrypt_key }}"

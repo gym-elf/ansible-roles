@@ -1,0 +1,57 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for consul
+- block: 
+    - name:  create consul directory
+      file:
+        path: "{{ consul_install_dir }}"
+        state: directory
+        mode: 0755
+
+    - name: generate consul encrypt key if not exists
+      command: consul keygen
+      register: consul_gen_key
+      when: consul_encrypt_key == ""
+      changed_when: false
+
+    - name: set generated key 
+      set_fact:
+        consul_encrypt_key: "{{ consul_encrypt_key | default(consul_gen_key.stdout) }}"
+
+    - name: deploy docker-compose.yml
+      template:
+        src: docker-compose.yml.j2
+        dest: "{{ consul_install_dir }}/docker-compose.yml"
+        mode: "0644"
+
+    - name: start consul container
+      command: docker compose up -d
+      args:
+        chdir: "{{ consul_install_dir }}"
+
+    - name: copy consul binary agent
+      shell: docker cp consul-master:/bin/consul /tmp/consul
+      become: yes
+
+    - name: create zip archive with consul binary
+      archive:
+        path: /tmp/consul
+        dest: /tmp/consul.zip
+        format: zip
+
+    - name: deploy file server systemd unit
+      template: 
+        src: file.service.j2
+        dest: /etc/systemd/system/file.service
+        mode: "0644"
+      
+    - name: reload systemd
+      command: systemctl daemon-reload
+
+
+    - name: enable and start Consul service
+      systemd:
+        name: file 
+        enabled: yes
+        state: started
+  become: yes    
