@@ -8,42 +8,10 @@
         state: directory
         mode: 0755
 
-    # - name: generate consul encrypt key if not exists
-    #   command: consul keygen
-    #   register: consul_gen_key
-    #   changed_when: false
-
-    # - name: set generated key 
-    #   set_fact:
-    #     consul_encrypt_key: "{{ consul_encrypt_key | default(consul_gen_key.stdout) }}"
-    
     - name: read current vault file
       ansible.builtin.include_vars:
         file: "{{ role_path }}/vars/secretik.yml"
         name: vault_vars
-
-    # - name: generate consul encryption key if empty
-    #   ansible.builtin.command: consul keygen
-    #   register: generated_key
-    #   when: vault_vars.consul_encrypt_key == ""
-
-    # - name: debug role_path
-    #   debug:
-    #     var: role_path
-    
-    # - name: ensure vars directory exists
-    #   file:
-    #     path: "{{ role_path }}/vars"
-    # #     state: directory
-    # #     mode: '0755'
-
-    # - name: update secrets.yml with generated key
-    #   ansible.builtin.copy:
-    #     dest: "{{ role_path }}/vars/secretik.yml"
-    #     content: |
-    #       consul_encrypt_key: "{{ generated_key.stdout | default(vault_vars.consul_encrypt_key) }}"
-    #   when: generated_key is defined
-    #   notify: encrypt_vault
 
     - name: deploy docker-compose.yml
       template:

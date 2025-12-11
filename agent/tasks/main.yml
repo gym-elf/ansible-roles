@@ -7,12 +7,16 @@
     file: ../consul/vars/secretik.yml
     name: consul_secret
 
-- name: deploy consul agent
-  template:
-    src: consul.hcl.j2
-    dest: /etc/consul.d/consul.hcl
-  vars:
-    consul_encrypt_key: "{{ consul_secret.consul_encrypt_key }}"
+- name: debug consul key 
+  debug:
+    var: consul_secret.consul_encrypt_key
+
+# - name: deploy consul agent
+#   template:
+#     src: consul.hcl.j2
+#     dest: /etc/consul.d/consul.hcl
+#   vars:
+#     consul_encrypt_key: "{{ consul_secret.consul_encrypt_key }}"
 
 - block:
     - name: get consul.zip
