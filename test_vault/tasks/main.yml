@@ -1,3 +1,12 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for test_vault
+
+- name: create .my.cnf 
+  template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf 
+    owner: root
+    group: root
+    mode: '0600'
+  become: yes

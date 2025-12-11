@@ -1,0 +1,51 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for exporter
+
+- name: download node_exporter
+  command: wget "{{ exporter_link }}"
+  args:
+    chdir: /tmp
+
+- name: extract node_exporter
+  unarchive:
+        src: "{{ node_exporter_archive_path }}"
+        dest: "/tmp/"
+        remote_src: yes
+
+- block:
+    - name: copy node_exporter in /bin 
+      copy:
+        src: "{{ node_exporter_extract_dir }}/node_exporter"
+        dest: /usr/local/bin/node_exporter
+        mode: "0755"
+        remote_src: yes
+
+    - name: install node_exporter systemd service
+      template:
+        src: node_exporter.service.j2
+        dest: /etc/systemd/system/node_exporter.service
+        mode: "0644"
+
+    - name: reload systemd
+      command: systemctl daemon-reload
+
+    - name: enable and start node_exporter service
+      systemd:
+        name: node_exporter
+        enabled: yes
+        state: started
+      
+    - name: deploy Consul service definition 
+      template: 
+        src: node_exporter.json.j2
+        dest: /etc/consul.d/node_exporter.json
+        mode: "0644"
+
+    - name: reload Consul
+      command: /usr/local/bin/consul reload
+      register: consul_reload
+      failed_when: "'Error' in consul_reload.stderr"
+      tags: kek
+
+  become: yes 
