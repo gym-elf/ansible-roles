@@ -2,8 +2,19 @@
 ---
 # tasks file for agent
 
+- name: include consul secrets
+  ansible.builtin.include_vars:
+    file: ../consul/vars/secretik.yml
+    name: consul_secret
 
- - block:
+- name: deploy consul agent
+  template:
+    src: consul.hcl.j2
+    dest: /etc/consul.d/consul.hcl
+  vars:
+    consul_encrypt_key: "{{ consul_secret.consul_encrypt_key }}"
+
+- block:
     - name: get consul.zip
       get_url:  
         url: "http://{{ agent_ip }}:8000/consul.zip"
@@ -49,4 +60,4 @@
         enabled: yes
         state: started
         
-   become: yes 
+  become: yes 
