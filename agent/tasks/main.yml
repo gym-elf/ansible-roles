@@ -24,6 +24,7 @@
         url: "http://{{ agent_ip }}:8000/consul.zip"
         dest: "/tmp/consul.zip"
         mode: '0644'
+      
 
     - name: extract downloaded binary
       unarchive:
@@ -48,7 +49,9 @@
         src: consul.hcl.j2
         dest: /etc/consul.d/consul.hcl
         mode: "0644"
-      
+      vars: 
+        consul_encrypt_key: "{{ consul_secret.consul_encrypt_key }}"
+
     - name: deploy systemd service file
       template:
         src: consul.service.j2

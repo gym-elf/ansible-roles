@@ -2,17 +2,18 @@ services:
   consul:
     image: hashicorp/consul:latest
     container_name: {{ consul_container_name }}
-    network_mode: bridge
+    
+    network_mode: host
 
     ports:
-      - "18500:8500"
-      - "18300:8300/tcp"
-      - "18300:8300/udp"
-      - "18301:8301/tcp"
-      - "18301:8301/udp"
-      - "18302:8302/tcp"
-      - "18302:8302/udp"
-      - "18600:8600/udp"
+      - "8500:8500"
+      - "8300:8300/tcp"
+      - "8300:8300/udp"
+      - "8301:8301/tcp"
+      - "8301:8301/udp"
+      - "8302:8302/tcp"
+      - "8302:8302/udp"
+      - "8600:8600/udp"
 
     volumes:
       - consul-data:/consul/data
@@ -28,10 +29,12 @@ services:
       - "-advertise={{ consul_advertise_ip }}"
       - "-ui"
       - "-bootstrap-expect=1"
+
+      - "-bind=0.0.0.0"
       - "-client=0.0.0.0"
       - "-datacenter={{ consul_datacenter }}"
       - "-node={{ consul_node_name }}"
-      - "-data-dir=/consul/config"
+      - "-data-dir=/consul/data"
       - "-config-dir=/consul/config"
       - "-encrypt={{ consul_encrypt_key }}"
 
