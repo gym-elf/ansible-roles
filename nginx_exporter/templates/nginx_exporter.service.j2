@@ -1,0 +1,16 @@
+[Unit]
+Description=NGINX Exporter
+After=network.target 
+
+[Service]
+Type=simple
+User=nginx-exporter
+Group=nginx-exporter
+ExecStart=/usr/local/bin/nginx-prometheus-exporter -nginx.scrape-uri={{ nginx_exporter_metrics_endpoint }}
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+

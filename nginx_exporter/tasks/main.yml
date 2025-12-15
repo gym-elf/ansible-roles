@@ -1,0 +1,63 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for nginx_exporter
+- block: 
+
+    - name: install nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+        
+    - name: create user for exporter
+      ansible.builtin.user:
+        name: nginx-exporter
+        system: yes
+        shell: /usr/sbin/nologin
+        state: present 
+
+    - name: download nginx_exporter
+      ansible.builtin.get_url:
+        url: "{{ nginx_exporter_download_url }}"
+        dest: /tmp/nginx_exporter.tar.gz
+        mode: '0644'
+
+    - name: extract nginx_exporter
+      ansible.builtin.unarchive:
+        src: /tmp/nginx_exporter.tar.gz
+        dest: /usr/local/bin/
+        remote_src: yes
+
+    - name: Unmask nginx_exporter service (force)
+      ansible.builtin.command: systemctl unmask nginx_exporter
+      ignore_errors: yes
+      changed_when: false
+          
+    - name: create systemd service for nginx_exporter
+      ansible.builtin.template:
+        src: nginx_exporter.service.j2
+        dest: /etc/systemd/system/nginx_exporter.service
+        mode: '0644'
+
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: enable and start nginx_exporter
+      ansible.builtin.systemd:
+        name: nginx_exporter
+        state: started
+        enabled: yes
+
+    - name: deploy Consul service definition 
+      template: 
+        src: nginx_exporter.json.j2
+        dest: /etc/consul.d/nginx_exporter.json
+        mode: "0644"
+
+    - name: reload Consul
+      command: /usr/local/bin/consul reload
+      register: consul_reload
+      failed_when: "'Error' in consul_reload.stderr"        
+
+  become: yes
+

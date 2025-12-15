@@ -26,7 +26,7 @@ services:
 
     command:
       - "-server"
-      - "-advertise={{ consul_advertise_ip }}"
+      - "-advertise={{ ansible_default_ipv4.address }}"
       - "-ui"
       - "-bootstrap-expect=1"
 
