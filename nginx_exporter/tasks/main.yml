@@ -27,7 +27,7 @@
         dest: /usr/local/bin/
         remote_src: yes
 
-    - name: Unmask nginx_exporter service (force)
+    - name: unmask nginx_exporter service (force)
       ansible.builtin.command: systemctl unmask nginx_exporter
       ignore_errors: yes
       changed_when: false
@@ -48,7 +48,7 @@
         state: started
         enabled: yes
 
-    - name: deploy Consul service definition 
+    - name: deploy service definition 
       template: 
         src: nginx_exporter.json.j2
         dest: /etc/consul.d/nginx_exporter.json

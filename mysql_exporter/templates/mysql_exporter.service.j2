@@ -1,0 +1,19 @@
+[Unit]
+Description=MySQL Exporter
+After=network.target mariadb.service
+Wants=mariadb.service
+
+[Service]
+User=mysql_exporter
+Group=mysql_exporter
+Type=simple
+
+ExecStart=/usr/local/bin/mysqld_exporter \
+  --web.listen-address=:9104 \
+  --config.my-cnf=/etc/mysqld_exporter/.my.cnf 
+  
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

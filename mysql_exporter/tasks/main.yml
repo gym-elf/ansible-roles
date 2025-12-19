@@ -1,0 +1,89 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for mysql_exporter
+#SPDX-License-Identifier: MIT-0
+- block:
+    - name: install MySQL Python client 
+      ansible.builtin.apt:
+        name:
+          - python3-pymysql 
+        state: present
+        update_cache: yes
+
+    - name: create mysql_exporter user
+      ansible.builtin.user:
+        name: mysql_exporter
+        system: yes
+        shell: /usr/sbin/nologin
+
+    - name: сonfigure MySQL/MariaDB user for exporter
+      community.mysql.mysql_user:
+        login_unix_socket: /var/run/mysqld/mysqld.sock 
+        name: "{{ mysql_user }}" 
+        password: "{{ mysql_exporter_password }}"  
+        host: "{{ mysql_host }}"
+        priv: "*.*:PROCESS,REPLICATION CLIENT,SELECT,SHOW VIEW"
+        state: present
+
+    - name: cleanup old exporter files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/mysqld_exporter.tar.gz
+        - /tmp/mysqld_exporter-{{ mysql_exporter_version }}.linux-amd64        
+
+    - name: download mysqld_exporter
+      ansible.builtin.get_url:
+        url: "{{ mysql_exporter_url }}"
+        dest: /tmp/mysqld_exporter.tar.gz
+        mode: '0644'
+
+    - name: extract mysqld_exporter
+      ansible.builtin.unarchive:
+        src: /tmp/mysqld_exporter.tar.gz
+        dest: /tmp
+        remote_src: yes
+
+    - name: install mysqld_exporter binary
+      ansible.builtin.copy:
+        src: "/tmp/mysqld_exporter-{{ mysql_exporter_version }}.linux-amd64/mysqld_exporter"
+        dest: /usr/local/bin/mysqld_exporter
+        mode: '0755'
+        owner: mysql_exporter
+        group: mysql_exporter
+        remote_src: yes
+
+    - name: create config directory
+      ansible.builtin.file:
+        path: /etc/mysqld_exporter
+        state: directory
+        owner: mysql_exporter
+        group: mysql_exporter
+        mode: '0750'
+
+    - name: deploy .my.cnf for mysql exporter
+      ansible.builtin.template:
+        src: my.cnf.j2
+        dest: /etc/mysqld_exporter/.my.cnf
+        owner: mysql_exporter
+        group: mysql_exporter
+        mode: '0600'
+
+    - name: deploy systemd unit
+      ansible.builtin.template:
+        src: mysql_exporter.service.j2
+        dest: /etc/systemd/system/mysqld_exporter.service
+        mode: '0644'
+
+    - name: reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: enable and start mysql_exporter
+      ansible.builtin.systemd:
+        name: mysqld_exporter
+        enabled: yes
+        state: started
+
+  become: yes

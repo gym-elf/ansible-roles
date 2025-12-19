@@ -46,6 +46,5 @@
       command: /usr/local/bin/consul reload
       register: consul_reload
       failed_when: "'Error' in consul_reload.stderr"
-      tags: kek
 
   become: yes 

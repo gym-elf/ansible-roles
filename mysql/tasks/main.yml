@@ -1,0 +1,28 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for mysql
+
+#SPDX-License-Identifier: MIT-0
+- block:
+    - name: install Mariadb server
+      apt:
+        name: mariadb-server
+        state: present
+
+    - name: deploy my.cnf
+      template:
+        src: my.cnf.j2
+        dest: /etc/mysql/my.cnf
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - restart mysql
+
+    - name: ensure MySQL service started and enabled
+      ansible.builtin.systemd:
+        name: mysql
+        state: started
+        enabled: yes
+
+  become: yes
