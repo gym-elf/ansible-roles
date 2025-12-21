@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for consul
+
+consul_install_dir: "{{ ansible_env.HOME }}/monitoring/consul"
+consul_container_name: consul-master
+consul_advertise_ip: "ansible_default_ipv4.address"
+consul_datacenter: "dc1"
+consul_node_name: "consul-master"
+consul_encrypt_key: ""

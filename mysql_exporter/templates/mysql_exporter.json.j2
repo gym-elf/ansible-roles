@@ -1,0 +1,12 @@
+{
+  "service": {
+    "name": "mysql_exporter",
+    "tags": ["metrics"],
+    "port": 9104,
+    "check": {
+      "http": "http://127.0.0.1:9104/metrics",
+      "interval": "10s",
+      "timeout": "1s"
+   }
+  }
+}

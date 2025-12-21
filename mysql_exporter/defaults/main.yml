@@ -1,0 +1,11 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for mysql_exporter
+
+
+mysql_exporter_version: "0.15.1"
+mysql_exporter_url: "https://github.com/prometheus/mysqld_exporter/releases/download/v{{ mysql_exporter_version }}/mysqld_exporter-{{ mysql_exporter_version }}.linux-amd64.tar.gz"
+mysql_exporter_port: 9104
+
+mysql_host: 127.0.0.1
+mysql_user: exporter

@@ -1,0 +1,8 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for exporter
+exporter_link: https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+node_exporter_archive_path: /tmp/node_exporter-1.7.0.linux-amd64.tar.gz
+node_exporter_extract_dir: /tmp/node_exporter-1.7.0.linux-amd64
+
+ExecStart_path: /usr/local/bin/node_exporter
